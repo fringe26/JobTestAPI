@@ -17,23 +17,27 @@ namespace API.Controllers
         }
 
         [HttpPost("/addPerson")]
-        public Task<int> Save(string json)
+        public async Task<int> Save(string json)
         {
-            // deserialize string into object of type Person using own deserializer that can be reused later (see more details in Minimal requirements section)
-            // DO NOT use 3rd party libraries for deserialization like Json.NET or Microsoft
-            // insert or update Person entity in database
-            // return entity id
-
-            _convertor
+          
+            using (var stream = new MemoryStream())
+            {
+                _convertor.Deserialize(stream, typeof(Person));
+            }
+            
+            
         }
 
         [HttpGet("/getAllPersons")]
-        public Task<string> GetAll(GetAllRequest request)
+        public async Task<string> GetAll(GetAllRequest request)
         {
-            // get Persons entities from database
-            // filter by GetAllRequest fields (null or empty fields should be ignored)
-            // use your own manually written json serializer to serialize result into string
-            throw new NotSupportedException();
+           string result;
+           using(Stream stream = new MemoryStream())
+            {
+                 _convertor.Serialize(stream, request);
+                result = stream.ToString()??"NoPersonFound";
+            }
+            return result;
         }
 
 
