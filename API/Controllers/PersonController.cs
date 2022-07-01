@@ -19,11 +19,12 @@ namespace API.Controllers
         [HttpPost("/addPerson")]
         public async Task<int> Save(string json)
         {
-          
+            Person person = null;
             using (var stream = new MemoryStream())
             {
-                _convertor.Deserialize(stream, typeof(Person));
+               person = _convertor.Deserialize(stream, typeof(Person)) as Person;
             }
+            return (int)person.Id;
             
             
         }
